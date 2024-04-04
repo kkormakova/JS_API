@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slider</title>
+    <style>
+        body {
+            background-color: #c9b893;
+        }
+        #slider-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        #image {
+            width: 500px;
+            height: 500px;
+            object-fit: cover;
+        }
+        .slider-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .slider-dot {
+            width: 15px;
+            height: 15px;
+            background-color: blanchedalmond;
+            cursor: pointer;
+        }
+        .active {
+            transform: scale(1.2);
+            background-color: rgb(121, 105, 81);
+        }
+        .arrow-left-1, .arrow-right-1 {
+            margin: 20px 8px;
+            border-radius: 50%;
+            border: 2px solid rgb(121, 105, 81);
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            box-shadow: 0 0 12px 4px blanchedalmond;
+            background: radial-gradient(#fff, blanchedalmond);
+        }
+        .arrow-left-1 path, .arrow-right-1 path {
+            fill: blanchedalmond;
+            stroke-width: 2;
+            stroke: rgb(121, 105, 81);
+            transition: fill 0.5s ease-out;
+        }
+        .arrow-right-1 {
+            transform: rotate(180deg);
+        }
+        .arrow-left-1:hover path, .arrow-right-1:hover path {
+            fill: rgb(121, 105, 81);
+        }
+    </style>
+</head>
+<body>
+    <div id="slider-container">
+        <div id="previous">
+            <svg class="arrow-left-1" viewbox="0 0 60 100">
+            <path d="M 50,0 L 60,10 L 20,50 L 60,90 L 50,100 L 0,50 Z" />
+            </svg>
+        </div>
+        <img id="image" src="img/image1.png" />
+        <div id="next">
+            <svg class="arrow-right-1" viewbox="0 0 60 100">
+            <path d="M 50,0 L 60,10 L 20,50 L 60,90 L 50,100 L 0,50 Z" />
+            </svg>
+        </div>
+    </div>
+    <div class="slider-wrapper"></div>
+    <script>
+      // Массив с URL изображений
+        const imagesUrls = [
+            "img/image1.png",
+            "img/image2.jpg",
+            "img/image3.png",
+            "img/image4.webp",
+        ];
+
+        let currentIndex = 0; // индекс для отслеживания текущей картинки
+        const sliderWrapper = document.querySelector(".slider-wrapper"); // кортейнер для добавления дотов
+        const sliderDot = document.createElement("div"); // создаем дот
+        sliderDot.classList.add("slider-dot");
+        let dots; // объявляем список дотов
+        slideDotAdd(); // отрисуем доты по количеству картинок
+
+        // Устанавливаем начальное изображение
+        const imageElement = document.querySelector("#image");
+        imageElement.src = imagesUrls[currentIndex];
+        dots[currentIndex].classList.add("active"); // активируем соответствующий дот
+
+        // функция добавления дотов по количеству изображений
+        function slideDotAdd() {
+            imagesUrls.forEach((elem) => {
+                sliderWrapper.append(sliderDot.cloneNode());
+        });
+        dots = document.querySelectorAll(".slider-dot");
+        }
+
+        // функция активации/девктивации дотов при перелистывании слайдов
+        function dotTog(index) {
+            for (let dot of dots) {
+                dot.classList.remove("active");
+            }
+        dots[index].classList.add("active");
+        }
+
+        // Функция, отвечающая за переход к следующему изображению
+        function nextImageHandler() {
+            currentIndex++; // Увеличиваем индекс текущего изображения
+            // Если текущий индекс больше длины массива изображений, устанавливаем его обратно в 0
+            if (currentIndex >= imagesUrls.length) {
+                currentIndex = 0;
+            }
+            imageElement.src = imagesUrls[currentIndex]; // Показываем следующее изображение
+            dotTog(currentIndex); //  активируем соответствующий дот
+        }
+
+        //  Функция, отвечающая за переход к предыдущему изображению
+        function previousImageHandler() {
+            currentIndex--; // Уменьшаем индекс
+            // Если текущий индекс меньше 0, устанавливаем его на последний индекс массива изображений
+            if (currentIndex < 0) {
+                currentIndex = imagesUrls.length - 1;
+            }
+            imageElement.src = imagesUrls[currentIndex]; // Показываем предыдущее изображение
+            dotTog(currentIndex); // активируем соответствующий дот
+        }
+
+        // Устанавливаем обработчики на доты
+        for (let i = 0; i < dots.length; i++) {
+            dots[i].addEventListener("click", () => {
+                currentIndex = i;
+                imageElement.src = imagesUrls[currentIndex];
+                dotTog(currentIndex);
+            });
+        }
+
+        // Устанавливаем обработчики событий на кнопки
+        const nextButton = document.querySelector("#next");
+        nextButton.addEventListener("click", nextImageHandler);
+        const previousButton = document.querySelector("#previous");
+        previousButton.addEventListener("click", previousImageHandler);
+    </script>
+</body>
+</html>
